@@ -66,6 +66,15 @@ event: message
 id: req_xyz789-11
 data: {
   "request_id": "req_xyz789",
+  "type": "markdown",
+  "content": "####hello"
+}
+
+
+event: message
+id: req_xyz789-12
+data: {
+  "request_id": "req_xyz789",
   "type": "follow_up",
   "content": [
     "Bạn muốn hỏi tiếp điều gì?",
