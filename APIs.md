@@ -1,101 +1,103 @@
-# MoMo Home Screen - API Specification
+# MoMo API Specification
 
 ## Response Format
 
-### Success Response
-
-```json
-{
-  "success": true,
-  "data": { /* API-specific data */ }
-}
-
-```
-
-### Error Response
-
-```json
-{
-  "success": false,
-  "error": {
-    "code": number_type_error_code,
-    "message": "Human readable message in Vietnamese",
-    "details": "Technical details for debugging"
-  },
-}
-
-```
-
-Bỏ meta, error code phải là number , ko phải string
-
-### Error Codes
-
-- `UNAUTHORIZED` (401): Token hết hạn hoặc không hợp lệ
-- `FORBIDDEN` (403): Không có quyền truy cập
-- `NOT_FOUND` (404): Không tìm thấy dữ liệu
-- `RATE_LIMITED` (429): Quá nhiều request
-- `VALIDATION_ERROR` (400): Dữ liệu request không hợp lệ
-- `SERVER_ERROR` (500): Lỗi server
-
-## Authentication
-
-Protected APIs require Bearer token in header:
-
-```json
-{
-  "Authorization": "Bearer {access_token}",
-  "User-Agent": "MoMo-App/1.0",
-  "Content-Type": "application/json"
-}
-
-```
-
----
-
-## API Endpoints
-
-### 1. AI Suggestions
-
-```
-GET /api/v1/ai-suggestions?screen=home&limit=3
-
-```
-
-Default: limit 
-
-**Authentication:** Required
-
-**Response:**
+### ✅ Success Response
 
 ```json
 {
   "success": true,
   "data": {
+    /* API-specific data */
+  }
+}
+```
+
+### ❌ Error Response
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": 401,
+    "message": "Token hết hạn hoặc không hợp lệ",
+    "details": "Chi tiết kỹ thuật nếu cần debug"
+  }
+}
+```
+
+---
+
+## 🤖 AI Suggestions (Unified)
+
+### AI Suggestions for All Screens
+
+`POST /api/v1/ai-suggestions`
+
+**Request Body:**
+
+```json
+{
+  "screen": "home", // home, market, news, ...
+  "limit": 3, // Số lượng gợi ý tối đa (default: 3, max: 10)
+  "context": {
+    "stock_code": "VCB" // for stock detail, fund detail
+  }
+}
+```
+
+- `screen`: home | market | news | history | order | account
+- `limit`: Number of suggestions (default: 3, max: 10)
+
+**Response Format:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "screen": "home",
     "suggestions": [
       {
-        "id": "suggestion_001",
-        "question": "Tại sao nên mua MBB ?",
+        "id": "home_001",
+        "query": "Tại sao nên mua MBB ?",
+        "category": "stock_analysis",
+        "priority": 1
+      },
+      {
+        "id": "home_002",
+        "query": "Danh mục đầu tư của tôi có cân bằng không?",
+        "category": "portfolio_analysis",
+        "priority": 2
+      },
+      {
+        "id": "home_003",
+        "query": "Xu hướng thị trường tuần này như thế nào?",
+        "category": "market_trend",
+        "priority": 3
       }
     ]
   }
 }
-
 ```
 
-**Valid Screen Values:** `home`, `market`, `portfolio`, `trade`, `opportunities`
+**Suggestion Categories:**
 
-Bỏ hết, chỉ để question → query
+- `stock_analysis`: Phân tích cổ phiếu cụ thể
+- `portfolio_analysis`: Phân tích danh mục đầu tư
+- `market_trend`: Xu hướng thị trường
+- `investment_advice`: Lời khuyên đầu tư
+- `technical_analysis`: Phân tích kỹ thuật
+- `fundamental_analysis`: Phân tích cơ bản
+- `news_impact`: Tác động tin tức
+- `risk_management`: Quản lý rủi ro
 
-### 2. Portfolio Summary
+---
 
-```
-GET /api/v1/portfolio/summary
+## 🏠 Home Screen
 
-```
+### 1. Portfolio Summary
 
-**Authentication:** Required
-
-**Response:**
+`GET /api/v1/portfolio/summary`
 
 ```json
 {
@@ -103,23 +105,15 @@ GET /api/v1/portfolio/summary
   "data": {
     "total_assets": {
       "value": 527000000,
-	    "unrealized_pnl_percentage": 4.98
+      "unrealized_pnl_percentage": 4.98
     }
   }
 }
-
 ```
 
-### 3. Personalized Products
+### 2. Personalized Products
 
-```
-GET /api/v1/products/personalized
-
-```
-
-**Authentication:** Required
-
-**Response:**
+`GET /api/v1/products/personalized`
 
 ```json
 {
@@ -145,23 +139,11 @@ GET /api/v1/products/personalized
     ]
   }
 }
-
 ```
 
-**Valid Product Types:** `trading`, `savings`, `investment`, `ipo`, `service`
+### 3. Recommendations
 
-Notes: sửa - bỏ type trong extra tag, momo dùng màu hồng hết
-
-### 4. Recommendations
-
-```
-GET /api/v1/recommendations/home-recommended-fin-entities?limit=10
-
-```
-
-**Authentication:** Required
-
-**Response:**
+`GET /api/v1/recommendations/home-recommended-fin-entities?limit=10`
 
 ```json
 {
@@ -173,31 +155,18 @@ GET /api/v1/recommendations/home-recommended-fin-entities?limit=10
         "type": "fund",
         "entity_name": "Quỹ trái phiếu VCBF-FIF",
         "description": "Phù hợp người mới, rủi ro thấp",
-        "price": 12450
+        "price": 12450,
         "reason": "Uy tín, ổn định 8%",
         "priority": 1
       }
     ]
   }
 }
-
 ```
 
-### 5. Portfolio Chart Data
+### 4. Portfolio Chart Data
 
-```
-GET /api/v1/portfolio/chart-data?timeframe=1M&granularity=daily
-
-```
-
-**Authentication:** Required
-
-**Parameters:**
-
-- `timeframe`: `1W|1M|3M|6M|1Y|3Y|5Y|All`
-- `granularity`: `daily|weekly|monthly`
-
-**Response:**
+`GET /api/v1/portfolio/chart-data?timeframe=1M&granularity=daily`
 
 ```json
 {
@@ -214,20 +183,160 @@ GET /api/v1/portfolio/chart-data?timeframe=1M&granularity=daily
     ],
     "summary": {
       "start_value": 500000000,
-      "end_value": 527000000,
+      "end_value": 527000000
     }
   }
 }
-
 ```
 
-### 6. User Profile
+---
 
+## 📈 Market Screen
+
+### 1. Market Favorites Tab
+
+`GET /api/v1/market/favorites`
+
+```json
+{
+  "success": true,
+  "data": {
+    "favorites": [
+      {
+        "code": "VCB",
+        "type": "stock",
+        "price": 92200,
+        "change": 1200,
+        "change_percent": 1.32
+      },
+      {
+        "code": "VCBF-FIF",
+        "type": "fund",
+        "price": 102500,
+        "change": -1500,
+        "change_percent": -1.44
+      }
+    ]
+  }
+}
 ```
-GET /api/v1/user/profile
 
+### 2. Market Indices
+
+`GET /api/v1/market/indices`
+
+```json
+{
+  "success": true,
+  "data": {
+    "indices": [
+      {
+        "code": "VNINDEX",
+        "value": 1323.0,
+        "change": 8.0,
+        "change_percent": 0.6
+      },
+      {
+        "code": "VN30",
+        "value": 780.0,
+        "change": 3.9,
+        "change_percent": 0.5
+      }
+    ]
+  }
+}
 ```
 
-**Authentication:** Required
+### 3. Market Movers
 
-**Response:**
+`GET /api/v1/market/top-movers?period=start_of_day`
+
+```json
+{
+  "success": true,
+  "data": {
+    "top_gainers": [
+      {
+        "code": "DXS",
+        "type": "stock",
+        "price": 9.09,
+        "change": 0.59,
+        "change_percent": 6.94
+      },
+      {
+        "code": "VCBF-FIF",
+        "type": "fund",
+        "price": 102000,
+        "change": 1000,
+        "change_percent": 0.99
+      }
+    ],
+    "top_losers": [
+      {
+        "code": "VIC",
+        "type": "stock",
+        "price": 45200,
+        "change": -800,
+        "change_percent": -1.74
+      },
+      {
+        "code": "TCBF",
+        "type": "fund",
+        "price": 101000,
+        "change": -1000,
+        "change_percent": -0.98
+      }
+    ]
+  }
+}
+```
+
+### 4. Add to Favorites
+
+`POST /api/v1/market/favorites`
+
+**Request Body**
+
+```json
+{
+  "code": "VCB",
+  "type": "stock" // "stock" | "fund"
+}
+```
+
+**Response**
+
+```json
+{
+  "success": true,
+  "data": {
+    "code": "VCB",
+    "type": "stock",
+    "price": 92200,
+    "change": 1200,
+    "change_percent": 1.32
+  }
+}
+```
+
+### 5. Remove from Favorites
+
+`DELETE /api/v1/market/favorites/{type}/{code}`
+
+| Path Parameter | Type   | Description              |
+| -------------- | ------ | ------------------------ |
+| `type`         | string | "stock" or "fund"        |
+| `code`         | string | Mã sản phẩm (e.g. "VCB") |
+
+**Response**
+
+```json
+{
+  "success": true,
+  "data": {
+    "code": "VCB",
+    "type": "stock",
+    "removed": true
+  }
+}
+```
