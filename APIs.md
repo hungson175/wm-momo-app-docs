@@ -304,3 +304,155 @@ GET /api/v1/user/profile
 }
 
 ```
+
+
+
+## 📈 Market Screen
+
+### 1. Market Favorites Tab
+
+`GET /api/v1/market/favorites`
+
+```json
+{
+  "success": true,
+  "data": {
+    "favorites": [
+      {
+        "code": "VCB",
+        "type": "stock",
+        "price": 92200,
+        "change": 1200,
+        "change_percent": 1.32
+      },
+      {
+        "code": "VCBF-FIF",
+        "type": "fund",
+        "price": 102500,
+        "change": -1500,
+        "change_percent": -1.44
+      }
+    ]
+  }
+}
+```
+
+### 2. Market Indices
+
+`GET /api/v1/market/indices`
+
+```json
+{
+  "success": true,
+  "data": {
+    "indices": [
+      {
+        "code": "VNINDEX",
+        "value": 1323.0,
+        "change": 8.0,
+        "change_percent": 0.6
+      },
+      {
+        "code": "VN30",
+        "value": 780.0,
+        "change": 3.9,
+        "change_percent": 0.5
+      }
+    ]
+  }
+}
+```
+
+### 3. Market Movers
+
+`GET /api/v1/market/top-movers?period=start_of_day`
+
+```json
+{
+  "success": true,
+  "data": {
+    "top_gainers": [
+      {
+        "code": "DXS",
+        "type": "stock",
+        "price": 9.09,
+        "change": 0.59,
+        "change_percent": 6.94
+      },
+      {
+        "code": "VCBF-FIF",
+        "type": "fund",
+        "price": 102000,
+        "change": 1000,
+        "change_percent": 0.99
+      }
+    ],
+    "top_losers": [
+      {
+        "code": "VIC",
+        "type": "stock",
+        "price": 45200,
+        "change": -800,
+        "change_percent": -1.74
+      },
+      {
+        "code": "TCBF",
+        "type": "fund",
+        "price": 101000,
+        "change": -1000,
+        "change_percent": -0.98
+      }
+    ]
+  }
+}
+```
+
+### 4. Add to Favorites
+
+`POST /api/v1/market/favorites`
+
+**Request Body**
+
+```json
+{
+  "code": "VCB",
+  "type": "stock" // "stock" | "fund"
+}
+```
+
+**Response**
+
+```json
+{
+  "success": true,
+  "data": {
+    "code": "VCB",
+    "type": "stock",
+    "price": 92200,
+    "change": 1200,
+    "change_percent": 1.32
+  }
+}
+```
+
+### 5. Remove from Favorites
+
+`DELETE /api/v1/market/favorites/{type}/{code}`
+
+| Path Parameter | Type   | Description              |
+| -------------- | ------ | ------------------------ |
+| `type`         | string | "stock" or "fund"        |
+| `code`         | string | Mã sản phẩm (e.g. "VCB") |
+
+**Response**
+
+```json
+{
+  "success": true,
+  "data": {
+    "code": "VCB",
+    "type": "stock",
+    "removed": true
+  }
+}
+```
