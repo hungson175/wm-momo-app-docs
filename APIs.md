@@ -73,12 +73,15 @@ Default: limit = 3
   "data": {
     "suggestions": [
       {
+        "priority": 1,
         "query": "Tại sao nên mua MBB ?"
       },
       {
+        "priority": 2,
         "query": "Phân tích kỹ thuật VN-Index hôm nay"
       },
       {
+        "priority": 3,
         "query": "So sánh quỹ mở và trái phiếu doanh nghiệp"
       }
     ]
@@ -107,7 +110,7 @@ GET /api/v1/portfolio/summary
   "data": {
     "total_assets": {
       "value": 527000000,
-	    "unrealized_pnl_amount": 27000000
+	    "unrealized_pnl_percentage": 4.98
     }
   }
 }
@@ -170,7 +173,17 @@ Default: limit = 4
 
 ```
 
-**Valid Product Types:** `trading`, `savings`, `investment`, `ipo`, `service` - will be provided by another API from backend
+**Valid Product Types:** 
+- `stock_analysis`: Phân tích cổ phiếu cụ thể
+- `portfolio_analysis`: Phân tích danh mục đầu tư
+- `market_trend`: Xu hướng thị trường
+- `investment_advice`: Lời khuyên đầu tư
+- `technical_analysis`: Phân tích kỹ thuật
+- `fundamental_analysis`: Phân tích cơ bản
+- `news_impact`: Tác động tin tức
+- `risk_management`: Quản lý rủi ro
+
+will be provided by another API from backend
 
 ### 4. Recommendations
 
@@ -322,14 +335,12 @@ GET /api/v1/user/profile
         "code": "VCB",
         "type": "stock",
         "price": 92200,
-        "change": 1200,
         "change_percent": 1.32
       },
       {
         "code": "VCBF-FIF",
         "type": "fund",
         "price": 102500,
-        "change": -1500,
         "change_percent": -1.44
       }
     ]
@@ -349,13 +360,11 @@ GET /api/v1/user/profile
       {
         "code": "VNINDEX",
         "value": 1323.0,
-        "change": 8.0,
         "change_percent": 0.6
       },
       {
         "code": "VN30",
         "value": 780.0,
-        "change": 3.9,
         "change_percent": 0.5
       }
     ]
@@ -376,14 +385,12 @@ GET /api/v1/user/profile
         "code": "DXS",
         "type": "stock",
         "price": 9.09,
-        "change": 0.59,
         "change_percent": 6.94
       },
       {
         "code": "VCBF-FIF",
         "type": "fund",
         "price": 102000,
-        "change": 1000,
         "change_percent": 0.99
       }
     ],
@@ -392,14 +399,12 @@ GET /api/v1/user/profile
         "code": "VIC",
         "type": "stock",
         "price": 45200,
-        "change": -800,
         "change_percent": -1.74
       },
       {
         "code": "TCBF",
         "type": "fund",
         "price": 101000,
-        "change": -1000,
         "change_percent": -0.98
       }
     ]
@@ -415,7 +420,7 @@ GET /api/v1/user/profile
 
 ```json
 {
-  "code": "VCB",
+  "symbol": "VCB",
   "type": "stock" // "stock" | "fund"
 }
 ```
@@ -424,35 +429,29 @@ GET /api/v1/user/profile
 
 ```json
 {
-  "success": true,
+  "success": false | true,
   "data": {
-    "code": "VCB",
-    "type": "stock",
-    "price": 92200,
-    "change": 1200,
-    "change_percent": 1.32
+    "messsage": "Some message",
   }
 }
 ```
 
 ### 5. Remove from Favorites
 
-`DELETE /api/v1/market/favorites/{type}/{code}`
+`DELETE /api/v1/market/favorites/{type}/{symbol}`
 
 | Path Parameter | Type   | Description              |
 | -------------- | ------ | ------------------------ |
 | `type`         | string | "stock" or "fund"        |
-| `code`         | string | Mã sản phẩm (e.g. "VCB") |
+| `symbol`         | string | Mã sản phẩm (e.g. "VCB") |
 
 **Response**
 
 ```json
 {
-  "success": true,
+  "success": false | true,
   "data": {
-    "code": "VCB",
-    "type": "stock",
-    "removed": true
+    "message": "Some message",
   }
 }
 ```
