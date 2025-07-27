@@ -1,6 +1,8 @@
 
 # MoMo Home Screen - API Specification
 
+**Note:** This document serves as the contract between frontend and backend. It should contain ONLY API specifications without any backend implementation notes.
+
 ## Response Format
 
 ### Success Response
@@ -64,7 +66,6 @@ GET /api/v1/ai-suggestions?screen=home&limit=3
 Default: limit = 3
 
 **Authentication:** Required
-
 **Response:**
 
 ```json
@@ -90,9 +91,15 @@ Default: limit = 3
 
 ```
 
-**Valid Screen Values:** `home`, `market`, `portfolio`, `trade`, `opportunities`
-this will be provided by another backend api later on
-
+**Valid Screen Values:**
+- `stock_analysis`: Phân tích cổ phiếu cụ thể
+- `portfolio_analysis`: Phân tích danh mục đầu tư
+- `market_trend`: Xu hướng thị trường
+- `investment_advice`: Lời khuyên đầu tư
+- `technical_analysis`: Phân tích kỹ thuật
+- `fundamental_analysis`: Phân tích cơ bản
+- `news_impact`: Tác động tin tức
+- `risk_management`: Quản lý rủi ro
 ### 2. Portfolio Summary
 
 ```
@@ -101,7 +108,6 @@ GET /api/v1/portfolio/summary
 ```
 
 **Authentication:** Required
-
 **Response:**
 
 ```json
@@ -127,7 +133,6 @@ GET /api/v1/products/personalized?limit=4
 Default: limit = 4
 
 **Authentication:** Required
-
 **Response:**
 
 ```json
@@ -153,9 +158,9 @@ Default: limit = 4
       },
       {
         "product_id": 789,
-        "type": "investment",
-        "title": "Quỹ mở VCBF-MGF",
-        "icon_name": "account_balance",
+        "type": "for_kids",
+        "title": "Cho con",
+        "icon_name": "child",
         "extra_tag": "Top 1",
         "priority": 3
       },
@@ -174,17 +179,6 @@ Default: limit = 4
 ```
 
 **Valid Product Types:** 
-- `stock_analysis`: Phân tích cổ phiếu cụ thể
-- `portfolio_analysis`: Phân tích danh mục đầu tư
-- `market_trend`: Xu hướng thị trường
-- `investment_advice`: Lời khuyên đầu tư
-- `technical_analysis`: Phân tích kỹ thuật
-- `fundamental_analysis`: Phân tích cơ bản
-- `news_impact`: Tác động tin tức
-- `risk_management`: Quản lý rủi ro
-
-will be provided by another API from backend
-
 ### 4. Recommendations
 
 ```
@@ -195,7 +189,6 @@ GET /api/v1/recommendations/home-recommended-fin-entities?limit=3
 Default: limit = 3
 
 **Authentication:** Required
-
 **Response:**
 
 ```json
@@ -244,7 +237,6 @@ GET /api/v1/portfolio/chart-data?timeframe=1M&granularity=daily
 ```
 
 **Authentication:** Required
-
 **Parameters:**
 
 - `timeframe`: `1W|1M|3M|6M|1Y|3Y|5Y|All`
@@ -302,7 +294,6 @@ GET /api/v1/user/profile
 ```
 
 **Authentication:** Required
-
 **Response:**
 
 ```json
@@ -455,3 +446,4 @@ GET /api/v1/user/profile
   }
 }
 ```
+EOF < /dev/null
