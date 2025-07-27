@@ -446,4 +446,68 @@ GET /api/v1/user/profile
   }
 }
 ```
-EOF < /dev/null
+
+
+## 📰 News Screen
+
+### 1. Tabs  
+`GET /api/v1/news/tabs`
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "tabs": [
+      { "key": "all", "title": "Tất cả" },
+      { "key": "favorites", "title": "Yêu thích" },
+      { "key": "banking", "title": "Ngân hàng" },
+      { "key": "technology", "title": "Công nghệ" },
+      { "key": "real_estate", "title": "Bất động sản" },
+      { "key": "commodities", "title": "Hàng hóa" }
+    ]
+  }
+}
+```
+
+### 2. Fetch News Articles  
+`GET /api/v1/news?tab={tab}&page={page}&page_size={page_size}`
+
+**Query Parameters:**
+- `tab`: one of the `key` values from `GET /api/v1/news/tabs`
+- `page`: page index (0-based, default 0)
+- `page_size`: number of articles per page (default 10, max 100)
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "articles": [
+      {
+        "id": 131,
+        "category": "banking",
+        "title": "VCB công bố kết quả kinh doanh quý 3/2025 tăng trưởng mạnh",
+        "summary": "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) vừa công bố kết quả kinh doanh quý 3 với lợi nhuận tăng 15% so với cùng kỳ.",
+        "source": "VCB",
+        "created_at": "2025-07-27T12:00:00Z",
+        "thumbnail_url": "https://api.momo.vn/v1/news/images/131.jpg",
+        "link": "https://api.momo.vn/v1/news/131"
+      },
+      {
+        "id": 112,
+        "category": "technology",
+        "title": "FPT ký hợp đồng lớn với đối tác Nhật Bản trị giá 50 triệu USD",
+        "summary": "Tập đoàn FPT vừa ký kết hợp đồng cung cấp dịch vụ công nghệ thông tin với một tập đoàn lớn tại Nhật Bản.",
+        "source": "FPT",
+        "created_at": "2025-07-27T10:00:00Z",
+        "thumbnail_url": "https://api.momo.vn/v1/news/images/112.jpg",
+        "link": "https://api.momo.vn/v1/news/112"
+      }
+    ],
+    "page": 0,
+    "page_size": 10,
+    "total_pages": 13
+  }
+}
+```
